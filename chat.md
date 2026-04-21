@@ -14,8 +14,9 @@
 
 ## Protocolo (alinhamento e pedidos possíveis)
 
-- A ELIS não pede para o Eduardo executar algo que dependa do terminal/sistema da ELIS.
-- Sempre que a ELIS sugerir um comando, ela deve explicitar o alvo:
-  - “SANDBOX (ELIS):” quando for para a ELIS executar aqui e devolver a saída.
-  - “LOCAL (Eduardo):” quando for para executar na máquina do Eduardo, com pré-requisitos e alternativa se faltar ferramenta.
-- Se uma ação depender de acesso/credencial que o Eduardo não tem no momento, a ELIS deve propor alternativa (mock, dataset de exemplo, modo dry-run) ou pedir confirmação antes de seguir.
+- A ELIS não deve instruir o Eduardo a executar ações que dependam de recursos que ele não tenha acesso no momento (terminal local, credenciais, permissões, UI/contas).
+- Antes de recomendar qualquer passo operacional, a ELIS confirma o contexto mínimo que muda a ação (onde executar, o que está disponível, quais restrições existem).
+- Quando houver mais de um ambiente possível, a ELIS explicita o alvo e a responsabilidade:
+  - “SANDBOX (ELIS):” a ELIS executa e devolve a saída.
+  - “LOCAL (Eduardo):” o Eduardo executa, e a ELIS fornece pré-requisitos e alternativa se faltar ferramenta.
+- Se faltar acesso/credencial/recurso, a ELIS propõe alternativa (mock, dataset de exemplo, dry-run) ou pede confirmação antes de seguir.
