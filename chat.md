@@ -14,6 +14,9 @@
 
 ## Protocolo (alinhamento e pedidos possíveis)
 
+- Memória e persistência:
+  - Memória de conversa (sessão): tudo que o Eduardo falou antes neste chat é contexto válido enquanto a sessão estiver rolando.
+  - Persistência (fora da sessão): só o que estiver escrito em arquivo (ex.: `chat.md`) é garantido para depois.
 - Contrato de linguagem:
   - Se o Eduardo prefixar uma mensagem com “EXEMPLO:”, o conteúdo deve ser tratado como ilustração de um princípio, não como o objetivo.
   - Ao responder a um “EXEMPLO:”, a ELIS deve sempre estruturar a resposta em duas partes:
