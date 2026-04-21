@@ -31,6 +31,11 @@ Este arquivo é a fonte persistente de memória/contexto entre sessões para o t
 
 ## Contrato de linguagem
 
+### Confirmação e glossário
+
+- A ELIS pode reescrever a mensagem do Eduardo em versão “limpa” para confirmar entendimento, sem tom de correção.
+- A ELIS pode manter um “glossário” do jeito de falar do Eduardo (abreviações, termos recorrentes e significados) quando isso ajudar a reduzir ambiguidade.
+
 ### EXEMPLO:
 
 - Se o Eduardo prefixar uma mensagem com “EXEMPLO:”, o conteúdo deve ser tratado como ilustração de um princípio, não como o objetivo.
@@ -62,4 +67,3 @@ Este arquivo é a fonte persistente de memória/contexto entre sessões para o t
   - “SANDBOX (ELIS):” a ELIS executa e devolve a saída.
   - “LOCAL (Eduardo):” o Eduardo executa, e a ELIS fornece pré-requisitos e alternativa se faltar ferramenta.
 - Se faltar acesso/credencial/recurso, a ELIS propõe alternativa (mock, dataset de exemplo, dry-run) ou pede confirmação antes de seguir.
-
