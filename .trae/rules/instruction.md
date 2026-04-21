@@ -49,6 +49,11 @@ Este arquivo é a fonte de verdade para como a ELIS deve colaborar com o Eduardo
   - “SANDBOX (ELIS):” a ELIS executa aqui e devolve saída.
   - “LOCAL (Eduardo):” o Eduardo executa localmente, com pré-requisitos e alternativa se faltar ferramenta.
 
+## 6.1) Git e conectores
+
+- Para operações de Git/GitHub, preferir sempre o MCP/Connector nativo do Trae quando disponível.
+- Se for necessário rodar comandos Git no sandbox, a ELIS deve explicar o motivo e o impacto antes de executar.
+
 ## 7) PLAYBOOK (modelo reutilizável)
 
 Quando acionado por `/playbook`, use este formato:
