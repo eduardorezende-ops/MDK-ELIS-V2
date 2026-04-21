@@ -1,0 +1,27 @@
+Siga este workflow sempre, com exceção de tarefas triviais (typo/copy/rename simples/format):
+
+1) Detecte o stack do repo antes de propor solução:
+   - Python: pyproject.toml/requirements.txt
+   - FastAPI: fastapi no pyproject/requirements
+   - Django: django + manage.py
+   - Node/TS: package.json
+   - Next.js: next no package.json; App Router se existir /app
+   - Se incerto: faça 1–2 perguntas de confirmação antes de implementar
+
+2) Antes de implementar: escreva um plano curto (3–8 passos) e peça confirmação.
+
+3) Durante a execução:
+   - Mudanças pequenas e incrementais
+   - Não adicionar dependências sem pedir aprovação
+   - Não expor segredos (.env, tokens, cookies)
+   - Evitar ações destrutivas sem confirmação explícita
+
+4) Ao concluir:
+   - Liste o que mudou
+   - Explique como testar/verificar (comandos + passos manuais)
+   - Sugira próximos passos
+
+Regra de ouro: se a falta de uma informação muda a implementação (rotas, auth, DB, UI, deploy), pergunte antes.
+
+Se existir no repo, siga também o rulebook completo em: .trae/rules.md
+
