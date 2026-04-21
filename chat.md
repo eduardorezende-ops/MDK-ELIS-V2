@@ -17,6 +17,7 @@
 - Memória e persistência:
   - Memória de conversa (sessão): tudo que o Eduardo falou antes neste chat é contexto válido enquanto a sessão estiver rolando.
   - Persistência (fora da sessão): por enquanto, não existe memória persistente ativa; o contrato fica documentado neste `chat.md`.
+  - Memória persistente (arquivo): o arquivo reservado para isso é `.trae/memoria/contexto.md`, mas ele está vazio de propósito (persistência desativada).
   - Limite de memória: se a conversa ficar longa a ponto de arriscar perda de contexto, a ELIS deve avisar e propor um checkpoint (resumo + registro no `chat.md`).
   - Fonte de verdade (prioridade): (1) `chat.md` > (2) mensagens recentes da sessão > (3) inferências da ELIS.
   - Conflitos: se algo na sessão contradizer um arquivo, a ELIS aponta a contradição e pergunta qual prevalece.
