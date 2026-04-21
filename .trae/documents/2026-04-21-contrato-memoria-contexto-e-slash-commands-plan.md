@@ -1,43 +1,35 @@
-# Plano — Contrato de Memória/Contexto + Slash Commands (com limpeza)
+# Plano — Auditoria do chat.md + Gatilhos (Slash Commands)
 
 ## Summary
 
-Verificar se os contratos estão consistentes e consolidar tudo que é “operacional/persistente” em `.trae/rules.md`, criando um pacote de Slash Commands cadastrável no Trae Solo Web. Ao final, limpar arquivos temporários do projeto.
+Verificar se `chat.md` contém tudo o que foi combinado (contratos, memória/contexto, gatilhos) e ajustar para que ele sirva como “fonte de verdade” para gerar planos e identificar gaps. Padronizar os gatilhos em Slash Commands (/ex, /checkpoint, /playbook, /contexto, /melhora) em um formato cadastrável na interface do Trae.
 
 ## Current State Analysis
 
 Arquivos existentes (no repo atual):
 
 - `chat.md`
-  - Contém acordos úteis, mas será tratado como arquivo temporário (não é a fonte final).
-  - Gap: contém regras que ainda referenciam persistência no próprio `chat.md`.
+  - Contém: identidade (ELIS), descrição do ambiente (sandbox) e o “Protocolo” com regras de memória/contexto, EXEMPLO/CHECKPOINT/PLAYBOOK e “não pedir o que o Eduardo não pode fazer”.
+  - Gap: os gatilhos estão no formato textual (EXEMPLO:, CHECKPOINT:, PLAYBOOK:), mas o objetivo atual é padronizar gatilhos em Slash Commands (`/ex`, etc.) e também incluir `/contexto` e `/melhora`.
+  - Gap: faltam instruções em formato “copiar/colar” para cadastrar Slash Commands na UI do Trae.
 
 - `.trae/memoria/contexto.md`
-  - Contém o contrato atual, mas o requisito atualizado é: por enquanto, **não manter memória persistente ativa**; o arquivo deve ficar em branco.
-
-- `.trae/rules.md`
-  - Já contém regras operacionais gerais (workflow/segurança/stack).
-  - Gap: ainda não reflete o contrato de memória/contexto + gatilhos em formato de Slash Commands conforme o requisito atualizado.
-
-- `.trae/snippet.txt` e `boas-ideias.md`
-  - Arquivos auxiliares temporários que deverão ser removidos após a consolidação em `.trae/rules.md`.
+  - Existe no repo, mas o requisito atual é: deixar em branco por enquanto (sem memória persistente ativa).
 
 ## Proposed Changes
 
-### 1) Reescrever `.trae/rules.md` como fonte operacional única (inclui contratos e gatilhos)
+### 1) Completar o `chat.md` para cobrir gatilhos e gerar planos sem gaps
 
-- **Arquivo**: `.trae/rules.md`
-  - Incorporar uma seção “Memória & Contexto (contrato)” com:
-    - definição de memória de sessão vs persistência (com o aviso de limite e o conceito de checkpoint)
-    - regra de “não pedir pro Eduardo o que ele não pode fazer”
-    - regra de “não literalizar EXEMPLO”
-  - Incorporar uma seção “Gatilhos (Slash Commands)” com a padronização:
-    - `/ex` = gatilho EXEMPLO (responder em PRINCÍPIO + APLICAÇÃO)
-    - `/checkpoint` = gatilho CHECKPOINT (resumo + pendências; propor registro se/quando persistência for habilitada)
-    - `/playbook` = gatilho PLAYBOOK (método reutilizável)
-    - `/contexto` = gatilho CONTEXTO (por enquanto: contexto operacional da sessão; não persistir automaticamente)
-    - `/melhora` = gatilho MELHORA (versão limpa do entendimento)
-  - Incorporar a seção “Pacote de cadastro na UI do Trae (Commands)” com Name/Description/Instructions (copiar/colar).
+- **Arquivo**: `chat.md`
+  - Adicionar uma seção “Gatilhos (Slash Commands)” que traduza os contratos atuais para a forma com barra:
+    - `/ex` = equivalente a “EXEMPLO:” (responder em PRINCÍPIO + APLICAÇÃO; não literalizar)
+    - `/checkpoint` = equivalente a “CHECKPOINT:” (resumo + pendências + proposta de registro; só registrar após “ok”)
+    - `/playbook` = equivalente a “PLAYBOOK:” (processo reutilizável; não focar no exemplo literal)
+    - `/contexto` = gatilho de contexto/dados persistentes (por enquanto: propor e confirmar; não assumir persistência ativa)
+    - `/melhora` = gatilho de “versão limpa” (reescrever fiel e perguntar “é isso?”)
+  - Adicionar uma seção “Como usar para gerar plano”:
+    - o que a ELIS deve extrair do chat (objetivo, restrições, acordos)
+    - sinais de “gap” (ambiguidade, conflito, falta de contexto mínimo)
 
 ### 2) Zerar o arquivo de memória persistente (por enquanto)
 
@@ -46,12 +38,12 @@ Arquivos existentes (no repo atual):
 
 ### 3) Formato para cadastrar Slash Commands no Trae (UI de Commands)
 
-Com base na doc oficial de Slash Commands (`https://docs.trae.ai/solo/slash-commands`), preparar um pacote “copiar/colar” para cadastrar na interface:
+Com base na doc oficial de Slash Commands (`https://docs.trae.ai/solo/slash-commands`) e no requisito do Eduardo, preparar um pacote “copiar/colar” para cadastrar na interface do Trae (Settings → Skills & Commands → Create Command).
 
 - **Runtime**: Cloud (TRAE SOLO Web) quando o projeto estiver puxado do GitHub.
 - **Command Name**: apenas letras minúsculas, números e hífens.
 
-Comandos propostos:
+Comandos propostos (para documentar dentro do `chat.md`):
 
 1) `/ex`
    - Name: `ex`
@@ -91,23 +83,14 @@ Comandos propostos:
 
 ## Assumptions & Decisions
 
+- O `chat.md` é a fonte principal para refletir tudo que foi discutido e servir de base para gerar planos.
 - Por enquanto, **não existe memória persistente ativa**; `.trae/memoria/contexto.md` fica em branco.
-- Se/quando persistência for habilitada, ela deve seguir a regra “propor e confirmar” antes de gravar.
+- Quando o Eduardo usar `/contexto`, a ELIS sempre segue “propor e confirmar” antes de registrar qualquer coisa.
 - Slash Commands são viáveis no Trae Solo Web e serão cadastradas via UI de Commands.
 - O padrão recomendado passa a ser `/...` (Slash Commands), mas a ELIS pode entender versões textuais quando aparecerem.
 
-## Cleanup (após implementação)
-
-Após consolidar tudo em `.trae/rules.md`, remover arquivos temporários:
-
-- Remover: `/.trae/snippet.txt`
-- Remover: `/boas-ideias.md`
-- Remover: `/chat.md`
-
-Por serem ações destrutivas, o executor pede confirmação explícita imediatamente antes de remover.
-
 ## Verification
 
-- Conferir que `.trae/rules.md` contém: contrato de memória/contexto + lista de gatilhos + pacote de cadastro das Slash Commands.
+- Conferir que `chat.md` contém: contrato de memória/contexto + lista de gatilhos + pacote de cadastro das Slash Commands + seção “Como usar para gerar plano”.
 - Conferir que `.trae/memoria/contexto.md` está vazio.
 - Validar que o “pacote de cadastro” está no formato aceito pela UI (nomes minúsculos e sem caracteres inválidos).
