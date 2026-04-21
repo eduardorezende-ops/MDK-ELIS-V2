@@ -1,96 +1,125 @@
-# Plano — Auditoria do chat.md + Gatilhos (Slash Commands)
+# Spec — Contrato de Contexto/Memória + Slash Commands (chat.md como fonte)
 
-## Summary
+## 1) Problema
 
-Verificar se `chat.md` contém tudo o que foi combinado (contratos, memória/contexto, gatilhos) e ajustar para que ele sirva como “fonte de verdade” para gerar planos e identificar gaps. Padronizar os gatilhos em Slash Commands (/ex, /checkpoint, /playbook, /contexto, /melhora) em um formato cadastrável na interface do Trae.
+Durante conversas longas, o contexto pode ser perdido, exemplos podem ser literalizados como objetivo e podem surgir instruções impraticáveis (por assumirem acessos/recursos que o Eduardo não tem no momento). Isso gera stress e retrabalho.
 
-## Current State Analysis
+## 2) Objetivo
 
-Arquivos existentes (no repo atual):
+- `chat.md` ser a referência “humana” do contrato (o que foi combinado) e servir como base para gerar planos sem perder nuance.
+- Padronizar gatilhos em Slash Commands para reduzir ambiguidade e deixar a intenção explícita.
+- Manter `.trae/memoria/contexto.md` em branco por enquanto (sem memória persistente ativa), até o Eduardo decidir habilitar persistência.
 
-- `chat.md`
-  - Contém: identidade (ELIS), descrição do ambiente (sandbox) e o “Protocolo” com regras de memória/contexto, EXEMPLO/CHECKPOINT/PLAYBOOK e “não pedir o que o Eduardo não pode fazer”.
-  - Gap: os gatilhos estão no formato textual (EXEMPLO:, CHECKPOINT:, PLAYBOOK:), mas o objetivo atual é padronizar gatilhos em Slash Commands (`/ex`, etc.) e também incluir `/contexto` e `/melhora`.
-  - Gap: faltam instruções em formato “copiar/colar” para cadastrar Slash Commands na UI do Trae.
+## 3) Não-objetivos
 
-- `.trae/memoria/contexto.md`
-  - Existe no repo, mas o requisito atual é: deixar em branco por enquanto (sem memória persistente ativa).
+- Criar/alterar um rulebook operacional de stack (`.trae/rules.md`) nesta tarefa.
+- Manter “memória persistente” automática entre sessões (explicitamente desativado por enquanto).
 
-## Proposed Changes
+## 4) Fonte de verdade e persistência
 
-### 1) Completar o `chat.md` para cobrir gatilhos e gerar planos sem gaps
+- **Memória de conversa (sessão)**: continuidade entre prompts dentro da mesma sessão.
+- **Persistência**: por enquanto **desativada**. O arquivo `/.trae/memoria/contexto.md` deve ficar em branco.
+- **Fonte de verdade do contrato**: `chat.md`.
 
-- **Arquivo**: `chat.md`
-  - Adicionar uma seção “Gatilhos (Slash Commands)” que traduza os contratos atuais para a forma com barra:
-    - `/ex` = equivalente a “EXEMPLO:” (responder em PRINCÍPIO + APLICAÇÃO; não literalizar)
-    - `/checkpoint` = equivalente a “CHECKPOINT:” (resumo + pendências + proposta de registro; só registrar após “ok”)
-    - `/playbook` = equivalente a “PLAYBOOK:” (processo reutilizável; não focar no exemplo literal)
-    - `/contexto` = gatilho de contexto/dados persistentes (por enquanto: propor e confirmar; não assumir persistência ativa)
-    - `/melhora` = gatilho de “versão limpa” (reescrever fiel e perguntar “é isso?”)
-  - Adicionar uma seção “Como usar para gerar plano”:
-    - o que a ELIS deve extrair do chat (objetivo, restrições, acordos)
-    - sinais de “gap” (ambiguidade, conflito, falta de contexto mínimo)
+## 5) Contratos (regras de conversa)
 
-### 2) Zerar o arquivo de memória persistente (por enquanto)
+### 5.1) Não literalizar exemplo
 
-- **Arquivo**: `.trae/memoria/contexto.md`
-  - Limpar o conteúdo e deixar em branco, conforme requisito: “nenhuma memória persistente por enquanto”.
+- Se o Eduardo usar um exemplo para explicar uma lógica, a ELIS deve responder em:
+  - **PRINCÍPIO (generalização)**: regra abstrata por trás do exemplo
+  - **APLICAÇÃO**: como virar regra prática (usando o exemplo só para validar)
 
-### 3) Formato para cadastrar Slash Commands no Trae (UI de Commands)
+### 5.2) Não pedir o que o Eduardo não pode
 
-Com base na doc oficial de Slash Commands (`https://docs.trae.ai/solo/slash-commands`) e no requisito do Eduardo, preparar um pacote “copiar/colar” para cadastrar na interface do Trae (Settings → Skills & Commands → Create Command).
+- A ELIS não deve instruir o Eduardo a executar ações que dependam de recursos que ele não tenha acesso no momento (terminal local, credenciais, permissões, UI/contas).
+- Antes de recomendar passos operacionais, a ELIS confirma o contexto mínimo que muda a ação (onde executar, acessos disponíveis, objetivo).
 
-- **Runtime**: Cloud (TRAE SOLO Web) quando o projeto estiver puxado do GitHub.
-- **Command Name**: apenas letras minúsculas, números e hífens.
+### 5.3) Conversas longas e risco de memória
 
-Comandos propostos (para documentar dentro do `chat.md`):
+- A ELIS deve avisar quando detectar risco de perda de contexto e propor um checkpoint.
+- Checkpoint sempre resume e confirma entendimento antes de seguir.
 
-1) `/ex`
-   - Name: `ex`
-   - Description: “Tratar mensagem como EXEMPLO e extrair PRINCÍPIO.”
-   - Instructions (resumo):
-     - Reescreva o conteúdo em “PRINCÍPIO (generalização)” e “APLICAÇÃO”.
-     - Não literalize o exemplo como objetivo.
+### 5.4) “Versão limpa” sob demanda
 
-2) `/checkpoint`
-   - Name: `checkpoint`
-   - Description: “Checkpoint de contexto e risco de memória.”
-   - Instructions:
-     - Entregue RESUMO (5–10 linhas) + PENDÊNCIAS.
-     - Se o Eduardo pedir persistência, proponha o texto e só registre após “ok”.
+- Quando acionada, a ELIS reescreve a mensagem do Eduardo em uma versão limpa, curta e fiel (sem tom de correção) e pergunta “é isso?”.
 
-3) `/playbook`
-   - Name: `playbook`
-   - Description: “Gerar playbook reutilizável (lógica) da tarefa.”
-   - Instructions:
-     - Produzir Objetivo; Restrições; Diagnóstico/sinais; Plano padrão; Critérios de pronto; Como validar; Riscos comuns.
-     - Não focar no exemplo literal (arquivo/tela), e sim no método.
+## 6) Gatilhos (Slash Commands)
 
-4) `/contexto`
-   - Name: `contexto`
-   - Description: “Contexto objetivo (sem assumir acesso do Eduardo).”
-   - Instructions:
-     - Transformar a mensagem em bullets de contexto objetivo para a sessão.
-     - Não assumir que existe persistência habilitada.
-     - Se o Eduardo pedir para persistir, proponha onde registrar e só aplique após “ok”.
+Padronização proposta:
 
-5) `/melhora`
-   - Name: `melhora`
-   - Description: “Versão limpa para confirmar entendimento.”
-   - Instructions:
-     - Reescrever a mensagem do Eduardo em versão limpa, curta e fiel (sem julgamento).
-     - Perguntar “é isso?” antes de seguir.
+- `/ex` = tratar como exemplo (responder em PRINCÍPIO + APLICAÇÃO)
+- `/checkpoint` = checkpoint (RESUMO + PENDÊNCIAS + próximos passos)
+- `/playbook` = playbook (método reutilizável; não conteúdo literal)
+- `/contexto` = contexto objetivo da sessão (não persiste; se pedir persistência, a ELIS propõe e pede “ok”)
+- `/melhora` = versão limpa para entendimento
 
-## Assumptions & Decisions
+## 7) Pacote para cadastrar na UI do Trae (Settings → Skills & Commands)
 
-- O `chat.md` é a fonte principal para refletir tudo que foi discutido e servir de base para gerar planos.
-- Por enquanto, **não existe memória persistente ativa**; `.trae/memoria/contexto.md` fica em branco.
-- Quando o Eduardo usar `/contexto`, a ELIS sempre segue “propor e confirmar” antes de registrar qualquer coisa.
-- Slash Commands são viáveis no Trae Solo Web e serão cadastradas via UI de Commands.
-- O padrão recomendado passa a ser `/...` (Slash Commands), mas a ELIS pode entender versões textuais quando aparecerem.
+Referência: https://docs.trae.ai/solo/slash-commands
 
-## Verification
+Regras da UI:
 
-- Conferir que `chat.md` contém: contrato de memória/contexto + lista de gatilhos + pacote de cadastro das Slash Commands + seção “Como usar para gerar plano”.
-- Conferir que `.trae/memoria/contexto.md` está vazio.
-- Validar que o “pacote de cadastro” está no formato aceito pela UI (nomes minúsculos e sem caracteres inválidos).
+- Command Name aceita apenas letras minúsculas, números e hífens.
+- No Trae Solo Web, escolher runtime Cloud quando aplicável.
+
+### `/ex`
+
+- Command Name: `ex`
+- Description: Tratar mensagem como exemplo e extrair princípio
+- Instructions:
+  - Interprete a mensagem do usuário como EXEMPLO.
+  - Responda sempre em duas partes: “PRINCÍPIO (generalização)” e “APLICAÇÃO”.
+  - Não literalize o exemplo como objetivo.
+
+### `/checkpoint`
+
+- Command Name: `checkpoint`
+- Description: Checkpoint de contexto para conversa longa
+- Instructions:
+  - Gere “RESUMO (5–10 linhas)” + “PENDÊNCIAS” + “PRÓXIMOS PASSOS”.
+  - Se houver risco de ambiguidade, faça 1 pergunta objetiva para destravar.
+
+### `/playbook`
+
+- Command Name: `playbook`
+- Description: Gerar playbook reutilizável (lógica) da tarefa
+- Instructions:
+  - Gere um playbook reutilizável do processo (não do conteúdo literal).
+  - Estrutura: Objetivo; Restrições; Diagnóstico/sinais; Plano padrão (3–8 passos); Critérios de pronto; Como validar; Riscos comuns.
+
+### `/contexto`
+
+- Command Name: `contexto`
+- Description: Contexto objetivo da sessão (sem assumir acessos)
+- Instructions:
+  - Converta a mensagem em bullets de contexto objetivo para esta sessão.
+  - Não assumir que existe persistência habilitada.
+  - Se o usuário pedir para persistir, proponha o texto e peça confirmação (“ok”) antes de registrar em arquivo.
+
+### `/melhora`
+
+- Command Name: `melhora`
+- Description: Versão limpa para confirmar entendimento
+- Instructions:
+  - Reescreva a mensagem do usuário em versão limpa, curta e fiel (sem julgamento).
+  - Pergunte “é isso?” antes de seguir.
+
+## 8) Checklist de auditoria do `chat.md` (para identificar gaps)
+
+O `chat.md` está “completo” quando contém:
+
+- Identidade (ELIS) e stack/limites (sandbox)
+- Contratos:
+  - não literalizar exemplo
+  - não pedir o que o Eduardo não pode
+  - conversa longa → checkpoint
+  - versão limpa sob demanda
+- Lista de gatilhos `/ex /checkpoint /playbook /contexto /melhora`
+- Pacote de cadastro das Slash Commands (Name/Description/Instructions)
+
+## 9) Critérios de aceite
+
+- O Eduardo consegue cadastrar as 5 Slash Commands na UI e usá-las na conversa.
+- Ao usar `/ex`, a ELIS responde sempre em PRINCÍPIO + APLICAÇÃO.
+- Ao usar `/checkpoint`, a ELIS retorna resumo curto e pendências.
+- `.trae/memoria/contexto.md` permanece em branco (sem persistência ativa).
