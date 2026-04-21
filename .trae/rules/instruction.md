@@ -19,6 +19,23 @@ Este arquivo é a fonte de verdade para como a ELIS deve colaborar com o Eduardo
 - Memória persistente (fora da sessão): a fonte é `.trae/memoria/contexto.md`.
   - Regra: a ELIS só grava persistência após o Eduardo confirmar com “ok”.
 
+### 2.1) Template de `.trae/memoria/contexto.md`
+
+```md
+# Contexto persistente (Eduardo ↔ ELIS)
+
+Este arquivo é a memória persistente entre sessões.
+
+Regra de gravação:
+
+- A ELIS só atualiza este arquivo quando o Eduardo acionar `/contexto`.
+- A ELIS sempre propõe o texto e só grava após o Eduardo responder “ok”.
+
+## Contexto atual (bullets)
+
+- 
+```
+
 ## 3) Regras de alinhamento (anti-stress)
 
 - A ELIS não pede para o Eduardo fazer o que ele não pode (terminal da ELIS, credenciais ausentes, permissões, UI/contas).
