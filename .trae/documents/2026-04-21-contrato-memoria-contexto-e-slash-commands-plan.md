@@ -1,49 +1,48 @@
-# Plano — Contrato de Memória/Contexto + Slash Commands
+# Plano — Contrato de Memória/Contexto + Slash Commands (com limpeza)
 
 ## Summary
 
-Verificar se `chat.md` e os arquivos do diretório `.trae/` refletem tudo que foi combinado (memória, contexto, contratos, gatilhos), identificar gaps/contradições e definir um formato de Slash Commands cadastrável no Trae Solo Web para padronizar os gatilhos.
+Verificar se os contratos estão consistentes e consolidar tudo que é “operacional/persistente” em `.trae/rules.md`, criando um pacote de Slash Commands cadastrável no Trae Solo Web. Ao final, limpar arquivos temporários do projeto.
 
 ## Current State Analysis
 
-Arquivos existentes:
+Arquivos existentes (no repo atual):
 
 - `chat.md`
-  - Contém: identidade (ELIS), descrição do ambiente (sandbox), e um “Protocolo” com regras sobre memória/contexto, EXEMPLO/CHECKPOINT/PLAYBOOK e regras de não pedir ações fora do acesso do Eduardo.
-  - Gap: parte das regras de persistência ainda referencia “registrar no `chat.md`”, mas a persistência oficial foi movida para `.trae/memoria/contexto.md`.
-  - Gap: não contém o mapeamento de gatilhos em formato “/comando” (ex.: `/ex`) nem o gatilho `/melhora` e `/contexto`.
+  - Contém acordos úteis, mas será tratado como arquivo temporário (não é a fonte final).
+  - Gap: contém regras que ainda referenciam persistência no próprio `chat.md`.
 
 - `.trae/memoria/contexto.md`
-  - É a fonte persistente oficial para memória/contexto (entre sessões).
-  - Contém: definições, prioridade de fonte de verdade, conflitos, contexto mínimo, limites, EXEMPLO/CHECKPOINT/PLAYBOOK, e protocolo de “SANDBOX vs LOCAL”.
-  - Gap: ainda usa gatilhos em formato “palavra-chave” (EXEMPLO/CHECKPOINT/PLAYBOOK), mas não mapeia explicitamente para Slash Commands (`/ex`, etc.).
-  - Gap: não define `/contexto` e `/melhora` como gatilhos formais (apenas descreve “versão limpa” como prática).
+  - Contém o contrato atual, mas o requisito atualizado é: por enquanto, **não manter memória persistente ativa**; o arquivo deve ficar em branco.
 
-- `.trae/rules.md` e `.trae/snippet.txt`
-  - Regras operacionais gerais (workflow/segurança/stack), não são a fonte principal de “memória e contexto humano”.
+- `.trae/rules.md`
+  - Já contém regras operacionais gerais (workflow/segurança/stack).
+  - Gap: ainda não reflete o contrato de memória/contexto + gatilhos em formato de Slash Commands conforme o requisito atualizado.
+
+- `.trae/snippet.txt` e `boas-ideias.md`
+  - Arquivos auxiliares temporários que deverão ser removidos após a consolidação em `.trae/rules.md`.
 
 ## Proposed Changes
 
-### 1) Consolidar “memória e contexto” como fonte persistente oficial
+### 1) Reescrever `.trae/rules.md` como fonte operacional única (inclui contratos e gatilhos)
+
+- **Arquivo**: `.trae/rules.md`
+  - Incorporar uma seção “Memória & Contexto (contrato)” com:
+    - definição de memória de sessão vs persistência (com o aviso de limite e o conceito de checkpoint)
+    - regra de “não pedir pro Eduardo o que ele não pode fazer”
+    - regra de “não literalizar EXEMPLO”
+  - Incorporar uma seção “Gatilhos (Slash Commands)” com a padronização:
+    - `/ex` = gatilho EXEMPLO (responder em PRINCÍPIO + APLICAÇÃO)
+    - `/checkpoint` = gatilho CHECKPOINT (resumo + pendências; propor registro se/quando persistência for habilitada)
+    - `/playbook` = gatilho PLAYBOOK (método reutilizável)
+    - `/contexto` = gatilho CONTEXTO (por enquanto: contexto operacional da sessão; não persistir automaticamente)
+    - `/melhora` = gatilho MELHORA (versão limpa do entendimento)
+  - Incorporar a seção “Pacote de cadastro na UI do Trae (Commands)” com Name/Description/Instructions (copiar/colar).
+
+### 2) Zerar o arquivo de memória persistente (por enquanto)
 
 - **Arquivo**: `.trae/memoria/contexto.md`
-  - Adicionar uma seção “Gatilhos (Slash Commands)” com tabela de mapeamento:
-    - `/ex` → EXEMPLO (responder em PRINCÍPIO + APLICAÇÃO)
-    - `/checkpoint` → CHECKPOINT (resumo + pendências + proposta de persistência; só persistir após “ok”)
-    - `/playbook` → PLAYBOOK (resumo reutilizável do processo/lógica)
-    - `/contexto` → Contexto persistente (propor texto e persistir após “ok”)
-    - `/melhora` → Reescrever “versão limpa” para confirmar entendimento (sem tom de correção)
-  - Definir também um bloco curto de “compatibilidade”:
-    - Continuar aceitando os gatilhos sem barra (EXEMPLO:, CHECKPOINT:, PLAYBOOK:) por hábito, mas recomendar `/...` como padrão.
-
-### 2) Ajustar `chat.md` para não ter contradições e virar “índice humano”
-
-- **Arquivo**: `chat.md`
-  - Atualizar as linhas que ainda falam “registrar no chat.md” para apontar para `.trae/memoria/contexto.md`.
-  - Opcional (recomendado): reduzir o “Protocolo” do `chat.md` para um resumo + link/ponteiro:
-    - “Persistência oficial em `.trae/memoria/contexto.md`”
-    - “Gatilhos oficiais: /ex, /checkpoint, /playbook, /contexto, /melhora”
-  - Manter no `chat.md` o que é “história do relacionamento” (nome ELIS, stack/limites) e um resumo do contrato.
+  - Limpar o conteúdo e deixar em branco, conforme requisito: “nenhuma memória persistente por enquanto”.
 
 ### 3) Formato para cadastrar Slash Commands no Trae (UI de Commands)
 
@@ -65,8 +64,8 @@ Comandos propostos:
    - Name: `checkpoint`
    - Description: “Checkpoint de contexto e risco de memória.”
    - Instructions:
-     - Entregue RESUMO (5–10 linhas) + PENDÊNCIAS + PROPOSTA de texto para persistir em `.trae/memoria/contexto.md`.
-     - Só persista após o Eduardo responder “ok”.
+     - Entregue RESUMO (5–10 linhas) + PENDÊNCIAS.
+     - Se o Eduardo pedir persistência, proponha o texto e só registre após “ok”.
 
 3) `/playbook`
    - Name: `playbook`
@@ -77,11 +76,11 @@ Comandos propostos:
 
 4) `/contexto`
    - Name: `contexto`
-   - Description: “Registrar contexto persistente (entre sessões).”
+   - Description: “Contexto objetivo (sem assumir acesso do Eduardo).”
    - Instructions:
-     - Transformar a mensagem em bullets de contexto objetivo.
-     - Propor patch para `.trae/memoria/contexto.md`.
-     - Só aplicar após “ok”.
+     - Transformar a mensagem em bullets de contexto objetivo para a sessão.
+     - Não assumir que existe persistência habilitada.
+     - Se o Eduardo pedir para persistir, proponha onde registrar e só aplique após “ok”.
 
 5) `/melhora`
    - Name: `melhora`
@@ -92,14 +91,23 @@ Comandos propostos:
 
 ## Assumptions & Decisions
 
-- Persistência oficial entre sessões fica em `.trae/memoria/contexto.md` (não no chat).
-- Persistência sempre segue a regra “propor e confirmar” antes de gravar.
+- Por enquanto, **não existe memória persistente ativa**; `.trae/memoria/contexto.md` fica em branco.
+- Se/quando persistência for habilitada, ela deve seguir a regra “propor e confirmar” antes de gravar.
 - Slash Commands são viáveis no Trae Solo Web e serão cadastradas via UI de Commands.
-- Mesmo com Slash Commands, continua valendo aceitar gatilhos textuais (EXEMPLO:, etc.) por compatibilidade, mas o padrão recomendado passa a ser `/...`.
+- O padrão recomendado passa a ser `/...` (Slash Commands), mas a ELIS pode entender versões textuais quando aparecerem.
+
+## Cleanup (após implementação)
+
+Após consolidar tudo em `.trae/rules.md`, remover arquivos temporários:
+
+- Remover: `/.trae/snippet.txt`
+- Remover: `/boas-ideias.md`
+- Remover: `/chat.md`
+
+Por serem ações destrutivas, o executor pede confirmação explícita imediatamente antes de remover.
 
 ## Verification
 
-- Conferir que `chat.md` não contém instruções conflitantes com `.trae/memoria/contexto.md`.
-- Conferir que `.trae/memoria/contexto.md` lista e define todos os gatilhos: `/ex`, `/checkpoint`, `/playbook`, `/contexto`, `/melhora`.
+- Conferir que `.trae/rules.md` contém: contrato de memória/contexto + lista de gatilhos + pacote de cadastro das Slash Commands.
+- Conferir que `.trae/memoria/contexto.md` está vazio.
 - Validar que o “pacote de cadastro” está no formato aceito pela UI (nomes minúsculos e sem caracteres inválidos).
-
